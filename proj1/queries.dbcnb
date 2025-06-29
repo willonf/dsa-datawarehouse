@@ -1,0 +1,878 @@
+cells:
+  - kind: 1
+    languageId: markdown
+    value: "### PROJETO 1 - DATA WAREHOUSE EM AMBIENTE LOCAL"
+    metadata: {}
+  - kind: 1
+    languageId: markdown
+    value: "#### CRIAÇÃO DO BANCO DW"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: CREATE SCHEMA dw AUTHORIZATION postgres;
+    metadata: {}
+  - kind: 1
+    languageId: markdown
+    value: "#### CRIAÇÃO DAS TABELAS DIMENSÃO E FATO"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Criação da tabela Dim_Produto\r
+
+      CREATE TABLE IF NOT EXISTS dw.dim_produto (\r
+
+      \    sk_produto SERIAL PRIMARY KEY,\r
+
+      \    id_produto INT, -- Legacy, with context meaning in the original data
+      source\r
+
+      \    nome VARCHAR(255),\r
+
+      \    categoria VARCHAR(255)\r
+
+      );"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Criação da tabela Dim_Canal\r
+
+      CREATE TABLE IF NOT EXISTS dw.dim_canal (\r
+
+      \    sk_canal SERIAL PRIMARY KEY,\r
+
+      \    id_canal INT, -- Legacy, with context meaning in the original data
+      source\r
+
+      \    nome VARCHAR(255),\r
+
+      \    regiao VARCHAR(255)\r
+
+      );"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Criação da tabela Dim_Data\r
+
+      CREATE TABLE IF NOT EXISTS dw.dim_data (\r
+
+      \    sk_data SERIAL PRIMARY KEY,  -- Same PK (without context meaning) of
+      original data source\r
+
+      \    data_completa DATE,\r
+
+      \    dia INT,\r
+
+      \    mes INT,\r
+
+      \    ano INT\r
+
+      );"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Criação da tabela Dim_Cliente\r
+
+      CREATE TABLE IF NOT EXISTS dw.dim_cliente (\r
+
+      \    sk_cliente SERIAL PRIMARY KEY,\r
+
+      \    id_cliente INT,  -- Legacy, with context meaning in the original data
+      source\r
+
+      \    nome VARCHAR(255),\r
+
+      \    tipo VARCHAR(255),\r
+
+      \    cidade VARCHAR(255),\r
+
+      \    estado VARCHAR(50),\r
+
+      \    pais VARCHAR(255)\r
+
+      );"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Criação da tabela Fato de Vendas\r
+
+      CREATE TABLE IF NOT EXISTS dw.fato_venda (\r
+
+      \  sk_produto INT NOT NULL,\r
+
+      \  sk_cliente INT NOT NULL,\r
+
+      \  sk_canal INT NOT NULL,\r
+
+      \  sk_data INT NOT NULL,\r
+
+      \  quantidade INT NOT NULL,\r
+
+      \  valor_venda DECIMAL(10,2) NOT NULL,\r
+
+      \  PRIMARY KEY (sk_produto, sk_cliente, sk_canal, sk_data),\r
+
+      \  FOREIGN KEY (sk_produto) REFERENCES dw.dim_produto (sk_produto),\r
+
+      \  FOREIGN KEY (sk_cliente) REFERENCES dw.dim_cliente (sk_cliente),\r
+
+      \  FOREIGN KEY (sk_canal) REFERENCES dw.dim_canal (sk_canal),\r
+
+      \  FOREIGN KEY (sk_data) REFERENCES dw.dim_data (sk_data)\r
+
+      );"
+    metadata: {}
+  - kind: 1
+    languageId: markdown
+    value: "#### PROCESSO DE ETL"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Carrega dim_produto\r
+
+      INSERT INTO dw.dim_produto (id_produto, nome, categoria)\r
+
+      VALUES \r
+
+      \    (1000, 'Laptop', 'Eletrônicos'),\r
+
+      \    (2000, 'Tablet', 'Eletrônicos'),\r
+
+      \    (3000, 'Café', 'Alimentos'),\r
+
+      \    (4000, 'Smartphone', 'Eletrônicos'),\r
+
+      \    (5000, 'Refrigerante', 'Bebidas'),\r
+
+      \    (6000, 'Suco', 'Bebidas'),\r
+
+      \    (7000, 'Livro', 'Educação'),\r
+
+      \    (8000, 'Fone de Ouvido', 'Eletrônicos'),\r
+
+      \    (9000, 'Notebook', 'Eletrônicos'),\r
+
+      \    (10000, 'Mouse', 'Acessórios');\r
+
+      \r\n"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Carrega dim_canal\r
+
+      INSERT INTO dw.dim_canal (id_canal, nome, regiao)\r
+
+      VALUES \r
+
+      \    (100, 'E-commerce', 'Global'),\r
+
+      \    (101, 'Loja Física', 'América do Norte'),\r
+
+      \    (102, 'Revendedor', 'Europa'),\r
+
+      \    (103, 'Distribuidor', 'Ásia'),\r
+
+      \    (104, 'Marketplace', 'América do Sul'),\r
+
+      \    (105, 'Atacado', 'África'),\r
+
+      \    (106, 'Varejo', 'Oceania'),\r
+
+      \    (107, 'Vendas Diretas', 'América do Norte'),\r
+
+      \    (108, 'Parcerias', 'Europa'),\r
+
+      \    (109, 'Telemarketing', 'América Latina');"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Carrega dim_cliente\r
+
+      INSERT INTO dw.dim_cliente (id_cliente, nome, tipo, cidade, estado,
+      pais)\r
+
+      VALUES \r
+
+      \    (1001, 'Empresa Alpha', 'Corporativo', 'São Paulo', 'SP',
+      'Brasil'),\r
+
+      \    (1002, 'João Silva', 'Individual', 'Rio de Janeiro', 'RJ',
+      'Brasil'),\r
+
+      \    (1003, 'Maria Oliveira', 'Individual', 'Lisboa', 'NA', 'Portugal'),\r
+
+      \    (1004, 'Empresa Beta', 'Corporativo', 'Porto Alegre', 'RS',
+      'Brasil'),\r
+
+      \    (1005, 'Carlos Mendez', 'Individual', 'Madri', 'NA', 'Espanha'),\r
+
+      \    (1006, 'Empresa Gamma', 'Corporativo', 'Buenos Aires', '',
+      'Argentina'),\r
+
+      \    (1007, 'Ana Pereira', 'Individual', 'Santiago', 'NA', 'Chile'),\r
+
+      \    (1008, 'Empresa Delta', 'Corporativo', 'Nova York', 'NY', 'Estados
+      Unidos'),\r
+
+      \    (1009, 'James Brown', 'Individual', 'Londres', 'NA', 'Reino
+      Unido'),\r
+
+      \    (1010, 'Empresa Epsilon', 'Corporativo', 'Sydney', 'NA',
+      'Austrália');\r\n"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Carrega dim_data com datas passadas e futuras\r
+
+      CREATE OR REPLACE PROCEDURE dw.sp_popula_dim_data()\r
+
+      LANGUAGE plpgsql\r
+
+      AS $$\r
+
+      DECLARE\r
+
+      \    v_data_atual DATE := '2021-01-01';\r
+
+      \    v_data_final DATE := '2031-12-31';\r
+
+      BEGIN\r
+
+      \    -- Loop para gerar e inserir as datas\r
+
+      \    WHILE v_data_atual <= v_data_final LOOP\r
+
+      \        INSERT INTO dw.dim_data (dia, mes, ano, data_completa)\r
+
+      \        VALUES (\r
+
+      \            EXTRACT(DAY FROM v_data_atual),\r
+
+      \            EXTRACT(MONTH FROM v_data_atual),\r
+
+      \            EXTRACT(YEAR FROM v_data_atual),\r
+
+      \            v_data_atual\r
+
+      \        );\r
+
+      \        \r
+
+      \        -- Incrementa a data \r
+
+      \        v_data_atual := v_data_atual + INTERVAL '1 day';\r
+
+      \    END LOOP;\r
+
+      END;\r
+
+      $$;\r
+
+      \r
+
+      -- Executa a SP\r
+
+      CALL dw.sp_popula_dim_data();"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Carrega tabela FATO\r
+
+      CREATE OR REPLACE PROCEDURE dw.sp_carrega_tabela_fato()\r
+
+      LANGUAGE plpgsql\r
+
+      AS $$\r
+
+      DECLARE\r
+
+      \    i INT := 1;\r
+
+      \    v_sk_produto INT;\r
+
+      \    v_sk_canal INT;\r
+
+      \    v_sk_data INT;\r
+
+      \    v_sk_cliente INT;\r
+
+      BEGIN\r
+
+      \    WHILE i <= 1000 LOOP\r
+
+      \        -- Seleciona IDs aleatórios válidos das tabelas de dimensão\r
+
+      \        v_sk_produto := (SELECT sk_produto FROM dw.dim_produto ORDER BY
+      RANDOM() LIMIT 1);\r
+
+      \        v_sk_canal := (SELECT sk_canal FROM dw.dim_canal ORDER BY
+      RANDOM() LIMIT 1);\r
+
+      \        v_sk_data := (SELECT sk_data FROM dw.dim_data WHERE ano <= 2025
+      ORDER BY RANDOM() LIMIT 1);\r
+
+      \        v_sk_cliente := (SELECT sk_cliente FROM dw.dim_cliente ORDER BY
+      RANDOM() LIMIT 1);\r
+
+      \r
+
+      \        BEGIN\r
+
+      \            -- Tenta inserir um registro com uma combinação única de
+      chaves\r
+
+      \            INSERT INTO dw.fato_venda (sk_produto, sk_canal, sk_data,
+      sk_cliente, quantidade, valor_venda)\r
+
+      \            VALUES (\r
+
+      \                v_sk_produto,\r
+
+      \                v_sk_canal,\r
+
+      \                v_sk_data,\r
+
+      \                v_sk_cliente,\r
+
+      \                FLOOR(1 + RANDOM() * 125),   -- Quantidade\r
+
+      \                ROUND(CAST(RANDOM() * 1000 AS numeric), 2)  -- Valor:
+      Aleatório até 1000 com duas casas decimais\r
+
+      \            );\r
+
+      \            i := i + 1;  -- Incrementa o contador apenas em caso de
+      sucesso\r
+
+      \        EXCEPTION WHEN unique_violation THEN\r
+
+      \            -- Se ocorrer um erro de violação de unicidade, continua o
+      loop sem incrementar 'i'\r
+
+      \            CONTINUE;\r
+
+      \        END;\r
+
+      \    END LOOP;\r
+
+      END;\r
+
+      $$;\r
+
+      \r
+
+      -- Executa a SP\r
+
+      CALL dw.sp_carrega_tabela_fato();"
+    metadata: {}
+  - kind: 1
+    languageId: markdown
+    value: "#### RELATÓRIOS"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Relatório de vendas por produto e canal.\r
+
+      CREATE OR REPLACE VIEW dw.VW_VendasPorProdutoCanal AS\r
+
+      SELECT \r
+
+      \    dp.nome AS Nome_Produto,\r
+
+      \    dc.nome AS Nome_Canal,\r
+
+      \    SUM(fv.valor_venda) AS Total_Vendas,\r
+
+      \    SUM(fv.quantidade) AS Total_Quantidade\r
+
+      FROM \r
+
+      \    dw.fato_venda fv\r
+
+      JOIN \r
+
+      \    dw.dim_produto dp ON fv.sk_produto = dp.sk_produto\r
+
+      JOIN \r
+
+      \    dw.dim_canal dc ON fv.sk_canal = dc.sk_canal\r
+
+      GROUP BY \r
+
+      \    dp.nome, dc.nome;"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Executa o relatório\r
+
+      SELECT * FROM dw.vw_vendasporprodutocanal ORDER BY nome_produto;"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Relatório de vendas para cada cliente em cada mês e ano.\r
+
+      CREATE OR REPLACE VIEW dw.VW_VendasPorClientePeriodo AS\r
+
+      SELECT \r
+
+      \    dc.nome AS Nome_Cliente,\r
+
+      \    dd.ano,\r
+
+      \    dd.mes,\r
+
+      \    SUM(fv.valor_venda) AS Total_Vendas,\r
+
+      \    SUM(fv.quantidade) AS Total_Quantidade\r
+
+      FROM \r
+
+      \    dw.fato_venda fv\r
+
+      JOIN \r
+
+      \    dw.dim_cliente dc ON fv.sk_cliente = dc.sk_cliente\r
+
+      JOIN \r
+
+      \    dw.dim_data dd ON fv.sk_data = dd.sk_data\r
+
+      GROUP BY \r
+
+      \    dc.nome, dd.ano, dd.mes;"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Executa o relatório\r
+
+      SELECT * FROM dw.vw_vendasporclienteperiodo ORDER BY nome_cliente;"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- View materializada\r
+
+      CREATE MATERIALIZED VIEW dw.MV_RelatorioVendasResumido\r
+
+      AS\r
+
+      SELECT \r
+
+      \    dp.categoria AS Categoria,\r
+
+      \    SUM(fv.valor_venda) AS Total_Vendas,\r
+
+      \    SUM(fv.quantidade) AS Total_Quantidade,\r
+
+      \    dd.Ano\r
+
+      FROM \r
+
+      \    dw.fato_venda fv\r
+
+      JOIN \r
+
+      \    dw.dim_produto dp ON fv.sk_produto = dp.sk_produto\r
+
+      JOIN \r
+
+      \    dw.dim_data dd ON fv.sk_data = dd.sk_data\r
+
+      GROUP BY \r
+
+      \    dp.categoria, dd.ano\r
+
+      ORDER BY \r
+
+      \    dd.ano;"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Executa o relatório\r
+
+      SELECT * FROM dw.mv_relatoriovendasresumido ORDER BY ano;\r\n"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Atualização da Materilized View\r
+
+      REFRESH MATERIALIZED VIEW dw.MV_RelatorioVendasResumido;"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Funcão para retornar relatório de vendas tendo cliente e ano como
+      parâmetro de entrada\r
+
+      CREATE OR REPLACE FUNCTION dw.RelatorioVendasPorCliente(cliente_nome
+      VARCHAR DEFAULT NULL, relatorio_ano INT DEFAULT NULL)\r
+
+      RETURNS TABLE (\r
+
+      \    categoria VARCHAR,\r
+
+      \    nome_produto VARCHAR,\r
+
+      \    ano INT,\r
+
+      \    mes INT,\r
+
+      \    total_valor_Venda DECIMAL(10, 2),\r
+
+      \    total_quantidade INT\r
+
+      )\r
+
+      LANGUAGE plpgsql\r
+
+      AS $$\r
+
+      BEGIN\r
+
+      \    RETURN QUERY\r
+
+      \    SELECT \r
+
+      \        dp.categoria,\r
+
+      \        dp.nome AS nome_produto,\r
+
+      \        dd.ano,\r
+
+      \        dd.mes,\r
+
+      \        SUM(fv.valor_venda) AS total_valor_Venda,\r
+
+      \        CAST(SUM(fv.quantidade) AS INTEGER) AS total_quantidade\r
+
+      \    FROM \r
+
+      \        dw.fato_venda fv\r
+
+      \    JOIN \r
+
+      \        dw.dim_produto dp ON fv.sk_produto = dp.sk_produto\r
+
+      \    JOIN \r
+
+      \        dw.dim_data dd ON fv.sk_data = dd.sk_data\r
+
+      \    JOIN \r
+
+      \        dw.dim_cliente dc ON fv.sk_cliente = dc.sk_cliente\r
+
+      \    WHERE   -- Filtro incorreto?\r
+
+      \        (cliente_nome IS NULL OR dc.nome = cliente_nome) AND\r
+
+      \        (relatorio_ano IS NULL OR dd.ano = relatorio_ano)\r
+
+      \    GROUP BY \r
+
+      \        dp.categoria, dp.nome, dd.ano, dd.mes\r
+
+      \    ORDER BY \r
+
+      \        dp.categoria, dp.nome, dd.ano, dd.mes;\r
+
+      END;\r
+
+      $$;"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Executando a função:\r
+
+      SELECT * FROM dw.RelatorioVendasPorCliente();\r
+
+      SELECT * FROM dw.RelatorioVendasPorCliente('João Silva');\r
+
+      SELECT * FROM dw.RelatorioVendasPorCliente('João Silva', 2024);\r
+
+      SELECT * FROM dw.RelatorioVendasPorCliente(NULL, 2024);"
+    metadata: {}
+  - kind: 1
+    languageId: markdown
+    value: "#### ADIÇÃO DE ÍNDICES PARA OTIMIZAÇÃO DE CONSULTA"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: EXPLAIN SELECT * FROM dw.vw_vendasporprodutocanal ORDER BY nome_produto;
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Índice composto na tabela fato_venda\r
+
+      CREATE INDEX idx_fato_venda_produto_canal ON dw.fato_venda(sk_produto,
+      sk_canal);\r
+
+      \r
+
+      \r
+
+      -- Índices nas dimensões Produto e Canal\r
+
+      CREATE INDEX idx_dim_produto ON dw.dim_produto(sk_produto);\r
+
+      CREATE INDEX idx_dim_canal ON dw.dim_canal(sk_canal);\r
+
+      \r
+
+      \r
+
+      -- Índice composto na tabela fato_venda\r
+
+      CREATE INDEX idx_fato_venda_cliente_data ON dw.fato_venda(sk_cliente,
+      sk_data);\r
+
+      \r
+
+      \r
+
+      -- Índices nas dimensões Cliente e Data\r
+
+      CREATE INDEX idx_dim_cliente ON dw.dim_cliente(sk_cliente);\r
+
+      CREATE INDEX idx_dim_data ON dw.dim_data(sk_data);\r
+
+      \r
+
+      \r
+
+      -- Índice composto na tabela fato_venda\r
+
+      CREATE INDEX idx_fato_venda_produto_data ON dw.fato_venda(sk_produto,
+      sk_data);\r
+
+      \r
+
+      \r
+
+      -- Índices nas dimensões Produto e Data\r
+
+      CREATE INDEX idx_dim_produto_categoria ON dw.dim_produto(categoria);\r
+
+      CREATE INDEX idx_dim_data_ano ON dw.dim_data(ano);"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: EXPLAIN SELECT * FROM dw.vw_vendasporprodutocanal ORDER BY nome_produto;
+    metadata: {}
+  - kind: 1
+    languageId: markdown
+    value: "#### SLOWLY CHANGING DIMENSION (SCD)"
+    metadata: {}
+  - kind: 1
+    languageId: markdown
+    value: "##### SCD TIPO 1\r
+
+      \r
+
+      - Substitui os dados antigos com os dados mais recentes, sem manter
+      histórico. \r
+
+      - Ideal para casos onde o histórico não é necessário."
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: SELECT * FROM dw.dim_cliente;
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "UPDATE dw.dim_cliente\r
+
+      SET \r
+
+      \    cidade = 'Bento Gonçalves',\r
+
+      \    estado = 'Rio Grande do Sul',\r
+
+      \    pais = 'Brasil'\r
+
+      WHERE id_cliente = 1010;\r\n"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: SELECT * FROM dw.dim_cliente;
+    metadata: {}
+  - kind: 1
+    languageId: markdown
+    value: "##### SCD TIPO 2\r
+
+      \r
+
+      SCD Tipo 2 é ideal em situações onde:\r
+
+      \r
+
+      - A análise de tendências ou o rastreamento histórico são importantes.\r
+
+      - É necessário manter registros precisos de mudanças para conformidade
+      regulatória ou auditorias.\r
+
+      - As dimensões têm atributos que mudam frequentemente e de maneiras
+      significativas, onde cada estado deve ser preservado para análises
+      futuras.\r
+
+      \r
+
+      Considerações:\r
+
+      - Embora o SCD Tipo 2 forneça uma rica visão histórica dos dados, ele pode
+      resultar em um aumento substancial no tamanho da base de dados e na
+      complexidade das consultas, uma vez que múltiplos registros para cada
+      entidade precisam ser gerenciados e consultados de forma eficaz."
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Modificação da tabela Dim_Produto\r
+
+      ALTER TABLE dw.dim_produto ADD COLUMN data_inicio DATE;\r
+
+      ALTER TABLE dw.dim_produto ADD COLUMN data_fim DATE;\r
+
+      ALTER TABLE dw.dim_produto ADD COLUMN ativo BOOLEAN DEFAULT true;"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- O processo de carga para cada dimensão irá verificar se existem
+      mudanças nos atributos que definem uma dimensão. \r
+
+      -- Se houver mudança, o registro atual será fechado (ou seja, a data_fim
+      será definida e ativo será definido como false)\r
+
+      -- e um novo registro será inserido.\r
+
+      \r
+
+      CREATE OR REPLACE FUNCTION dw.update_dim_produto(v_id_produto INT, v_nome
+      VARCHAR, v_categoria VARCHAR, v_data_atual DATE)\r
+
+      RETURNS VOID AS $$\r
+
+      BEGIN\r
+
+      \    -- Verificar se existe uma mudança\r
+
+      \    IF EXISTS (\r
+
+      \        SELECT 1 FROM dw.dim_produto \r
+
+      \        WHERE id_produto = v_id_produto AND ativo\r
+
+      \        AND (nome <> v_nome OR categoria <> v_categoria)\r
+
+      \    ) THEN\r
+
+      \        -- Fechar o registro atual\r
+
+      \        UPDATE dw.dim_produto \r
+
+      \        SET data_fim = v_data_atual, ativo = false\r
+
+      \        WHERE id_produto = v_id_produto AND ativo;\r
+
+      \r
+
+      \        -- Inserir novo registro\r
+
+      \        INSERT INTO dw.dim_produto (id_produto, nome, categoria,
+      data_inicio, data_fim, ativo)\r
+
+      \        VALUES (v_id_produto, v_nome, v_categoria, v_data_atual, NULL,
+      true);\r
+
+      \    END IF;\r
+
+      END;\r
+
+      $$ LANGUAGE plpgsql;\r\n"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Exemplo de chamada da função\r
+
+      SELECT dw.update_dim_produto(10000, 'Mouse', 'Periféricos',
+      CURRENT_DATE);\r
+
+      SELECT dw.update_dim_produto(6000, 'Suco Light', 'Bebidas',
+      CURRENT_DATE);"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: SELECT * FROM dim_produto;
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Inserindo registros na Tabela Fato\r
+
+      INSERT INTO dw.fato_venda (sk_produto, sk_canal, sk_data, sk_cliente,
+      quantidade, valor_venda)\r
+
+      VALUES (12, 2, 3, 5, 17, 234.00);\r
+
+      \r
+
+      INSERT INTO dw.fato_venda (sk_produto, sk_canal, sk_data, sk_cliente,
+      quantidade, valor_venda)\r
+
+      VALUES (12, 4, 5, 4, 9, 134.00);"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Relatório\r
+
+      SELECT * FROM dw.vw_vendasporprodutocanal WHERE nome_produto IN ('Suco',
+      'Suco Light');"
+    metadata: {}
+  - kind: 1
+    languageId: markdown
+    value: "##### SCD TIPO 3\r
+
+      \r
+
+      - Armazena apenas a versão atual e a anterior dos dados."
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Seleciona os dados\r
+
+      SELECT * FROM dw.dim_canal;"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Adiciona uma coluna à tabela\r
+
+      ALTER TABLE dw.dim_canal\r
+
+      ADD COLUMN regiao_anterior VARCHAR(255);"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Atualização da tabela com o valor antigo\r
+
+      UPDATE dw.dim_canal\r
+
+      SET regiao_anterior = 'América Latina'\r
+
+      WHERE id_canal = 109;"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Atualização da tabela com o valor novo\r
+
+      UPDATE dw.dim_canal\r
+
+      SET regiao = 'LATAM'\r
+
+      WHERE id_canal = 109;"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Seleciona os dados\r
+
+      SELECT * FROM dw.dim_canal;"
+    metadata: {}
+metadata:
+  conn:
+    id: hTlf92Tb9CkQ3ypPaNLPT
+    name: "@docker"
+  database: dsadb
+  schema: dw
