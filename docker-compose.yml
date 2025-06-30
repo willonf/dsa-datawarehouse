@@ -18,6 +18,23 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres_origin:
+    env_file: .env
+    image: postgres:latest
+    container_name: postgres_origin
+    ports:
+      - "5431:5432"
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata_origin:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   pgadmin4:
     env_file: .env
     image: dpage/pgadmin4:latest
@@ -28,27 +45,15 @@ services:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     restart: always
-    volumes:
-    - pgadmindata:/var/lib/pgadmin
     healthcheck:
       test: ["CMD", "wget", "-O", "-", "http://localhost:80/misc/ping"]
       interval: 10s
       timeout: 5s
       retries: 5
-  dsa-dw-lab1:
-    env_file: .env
-    image: dw-dsa:lab1
-    build: .
-    container_name: dw-dsa-lab1
-    restart: always
-    tty: true
-    stdin_open: true
-    volumes:
-    - ./lab1:/lab1
 
 volumes:
   pgdata:
-  pgadmindata:
+  pgdata_origin:
 
 networks:
   dsa:

@@ -870,9 +870,4 @@ cells:
 
       SELECT * FROM dw.dim_canal;"
     metadata: {}
-metadata:
-  conn:
-    id: hTlf92Tb9CkQ3ypPaNLPT
-    name: "@docker"
-  database: dsadb
-  schema: dw
+metadata: {}
