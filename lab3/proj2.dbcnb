@@ -1,0 +1,512 @@
+cells:
+  - kind: 1
+    languageId: markdown
+    value: "### LAB 3 - AIRBYTE"
+    metadata: {}
+  - kind: 1
+    languageId: markdown
+    value: "#### CRIAÇÃO E CARGA DO BANCO DE ORIGEM"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: CREATE SCHEMA schema1 AUTHORIZATION postgres;
+    metadata:
+      conn:
+        id: U_jykMJmw6XK7VvqfaOpn
+        name: Postgres-Origin
+      database: origin
+      schema: public
+  - kind: 2
+    languageId: sql
+    value: "CREATE TABLE schema1.ft_categorias (\r
+
+      \    id_categoria SERIAL PRIMARY KEY,\r
+
+      \    nome_categoria VARCHAR(255) NOT NULL\r
+
+      );\r
+
+      \r
+
+      INSERT INTO schema1.ft_categorias (nome_categoria) VALUES
+      ('Computadores');\r
+
+      INSERT INTO schema1.ft_categorias (nome_categoria) VALUES
+      ('Smartphones');\r
+
+      INSERT INTO schema1.ft_categorias (nome_categoria) VALUES
+      ('Impressoras');"
+    metadata:
+      conn:
+        id: U_jykMJmw6XK7VvqfaOpn
+        name: Postgres-Origin
+      database: origin
+      schema: public
+  - kind: 2
+    languageId: sql
+    value: "CREATE TABLE schema1.ft_subcategorias (\r
+
+      \    id_subcategoria SERIAL PRIMARY KEY,\r
+
+      \    nome_subcategoria VARCHAR(255) NOT NULL,\r
+
+      \    id_categoria INTEGER REFERENCES schema1.ft_categorias(id_categoria)\r
+
+      );\r
+
+      \r
+
+      INSERT INTO schema1.ft_subcategorias (nome_subcategoria, id_categoria)
+      VALUES ('Notebook', 1);\r
+
+      INSERT INTO schema1.ft_subcategorias (nome_subcategoria, id_categoria)
+      VALUES ('Desktop', 1);\r
+
+      INSERT INTO schema1.ft_subcategorias (nome_subcategoria, id_categoria)
+      VALUES ('iPhone', 2);\r
+
+      INSERT INTO schema1.ft_subcategorias (nome_subcategoria, id_categoria)
+      VALUES ('Samsung Galaxy', 2);\r
+
+      INSERT INTO schema1.ft_subcategorias (nome_subcategoria, id_categoria)
+      VALUES ('Laser', 3);\r
+
+      INSERT INTO schema1.ft_subcategorias (nome_subcategoria, id_categoria)
+      VALUES ('Matricial', 3);"
+    metadata:
+      conn:
+        id: U_jykMJmw6XK7VvqfaOpn
+        name: Postgres-Origin
+      database: origin
+      schema: public
+  - kind: 2
+    languageId: sql
+    value: "CREATE TABLE schema1.ft_produtos (\r
+
+      \    id_produto SERIAL PRIMARY KEY,\r
+
+      \    nome_produto VARCHAR(255) NOT NULL,\r
+
+      \    preco_produto NUMERIC(10,2) NOT NULL,\r
+
+      \    id_subcategoria INTEGER REFERENCES
+      schema1.ft_subcategorias(id_subcategoria)\r
+
+      );\r
+
+      \r
+
+      INSERT INTO schema1.ft_produtos (nome_produto, preco_produto,
+      id_subcategoria) VALUES ('Apple MacBook Pro M3', 6589.99, 1);\r
+
+      INSERT INTO schema1.ft_produtos (nome_produto, preco_produto,
+      id_subcategoria) VALUES ('Desktop Dell 32 GB', 1500.50, 1);\r
+
+      INSERT INTO schema1.ft_produtos (nome_produto, preco_produto,
+      id_subcategoria) VALUES ('iPhone 15', 4140.00, 2);\r
+
+      INSERT INTO schema1.ft_produtos (nome_produto, preco_produto,
+      id_subcategoria) VALUES ('Samsung Galaxy', 3500.99, 2);\r
+
+      INSERT INTO schema1.ft_produtos (nome_produto, preco_produto,
+      id_subcategoria) VALUES ('HP 126A Original LaserJet', 300.90, 3);\r
+
+      INSERT INTO schema1.ft_produtos (nome_produto, preco_produto,
+      id_subcategoria) VALUES ('Epson LX-300', 350.99, 3);"
+    metadata:
+      conn:
+        id: U_jykMJmw6XK7VvqfaOpn
+        name: Postgres-Origin
+      database: origin
+      schema: public
+  - kind: 2
+    languageId: sql
+    value: "CREATE TABLE schema1.ft_cidades (\r
+
+      \    id_cidade SERIAL PRIMARY KEY,\r
+
+      \    nome_cidade VARCHAR(255) NOT NULL\r
+
+      );\r
+
+      \r
+
+      INSERT INTO schema1.ft_cidades (nome_cidade) VALUES\r
+
+      \    ('Recife'),\r
+
+      \    ('Rio de Janeiro'),\r
+
+      \    ('Belo Horizonte'),\r
+
+      \    ('Salvador'),\r
+
+      \    ('Blumenau'),\r
+
+      \    ('Curitiba'),\r
+
+      \    ('Fortaleza'),\r
+
+      \    ('Natal'),\r
+
+      \    ('Porto Alegre'),\r
+
+      \    ('Manaus');"
+    metadata:
+      conn:
+        id: U_jykMJmw6XK7VvqfaOpn
+        name: Postgres-Origin
+      database: origin
+      schema: public
+  - kind: 2
+    languageId: sql
+    value: "CREATE TABLE schema1.ft_canais (\r
+
+      \    id_canal SERIAL PRIMARY KEY,\r
+
+      \    pais VARCHAR(255) NOT NULL,\r
+
+      \    regiao VARCHAR(255) NOT NULL,\r
+
+      \    id_cidade INTEGER REFERENCES schema1.ft_cidades(id_cidade)\r
+
+      );\r
+
+      \r
+
+      INSERT INTO schema1.ft_canais (pais, regiao, id_cidade) VALUES\r
+
+      \    ('Brasil', 'Nordeste', 1),\r
+
+      \    ('Brasil', 'Sudeste', 2),\r
+
+      \    ('Brasil', 'Sudeste', 3),\r
+
+      \    ('Brasil', 'Nordeste', 4),\r
+
+      \    ('Brasil', 'Sul', 5),\r
+
+      \    ('Brasil', 'Sul', 6),\r
+
+      \    ('Brasil', 'Nordeste', 7),\r
+
+      \    ('Brasil', 'Nordeste', 8),\r
+
+      \    ('Brasil', 'Sul', 9),\r
+
+      \    ('Brasil', 'Norte', 10);"
+    metadata:
+      conn:
+        id: U_jykMJmw6XK7VvqfaOpn
+        name: Postgres-Origin
+      database: origin
+      schema: public
+  - kind: 2
+    languageId: sql
+    value: "CREATE TABLE schema1.ft_tipo_cliente (\r
+
+      \    id_tipo SERIAL PRIMARY KEY,\r
+
+      \    nome_tipo VARCHAR(255) NOT NULL\r
+
+      );\r
+
+      \r
+
+      INSERT INTO schema1.ft_tipo_cliente (nome_tipo) VALUES ('Corporativo');\r
+
+      INSERT INTO schema1.ft_tipo_cliente (nome_tipo) VALUES ('Consumidor');\r
+
+      INSERT INTO schema1.ft_tipo_cliente (nome_tipo) VALUES ('Desativado');"
+    metadata:
+      conn:
+        id: U_jykMJmw6XK7VvqfaOpn
+        name: Postgres-Origin
+      database: origin
+      schema: public
+  - kind: 2
+    languageId: sql
+    value: "CREATE TABLE schema1.ft_clientes (\r
+
+      \    id_cliente SERIAL PRIMARY KEY,\r
+
+      \    nome_cliente VARCHAR(255) NULL,\r
+
+      \    email_cliente VARCHAR(255) NULL,\r
+
+      \    id_cidade INTEGER REFERENCES schema1.ft_cidades(id_cidade),\r
+
+      \    id_tipo INTEGER REFERENCES schema1.ft_tipo_cliente(id_tipo)\r
+
+      );\r
+
+      \r
+
+      INSERT INTO schema1.ft_clientes (nome_cliente, email_cliente, id_cidade,
+      id_tipo) VALUES ('João Silva', 'joao.silva@teste.com', 1, 1);\r
+
+      INSERT INTO schema1.ft_clientes (nome_cliente, email_cliente, id_cidade,
+      id_tipo) VALUES ('Maria Santos', 'maria.santos@teste.com', 2, 2);\r
+
+      INSERT INTO schema1.ft_clientes (nome_cliente, email_cliente, id_cidade,
+      id_tipo) VALUES ('Pedro Lima', 'pedro.lima@teste.com', 3, 2);\r
+
+      INSERT INTO schema1.ft_clientes (nome_cliente, email_cliente, id_cidade,
+      id_tipo) VALUES ('Ana Rodrigues', 'ana.rodrigues@teste.com', 4, 2);\r
+
+      INSERT INTO schema1.ft_clientes (nome_cliente, email_cliente, id_cidade,
+      id_tipo) VALUES ('José Oliveira', 'jose.oliveira@teste.com', 1, 2);\r
+
+      INSERT INTO schema1.ft_clientes (nome_cliente, email_cliente, id_cidade,
+      id_tipo) VALUES ('Carla Santos', 'carla.santos@teste.com', 4, 1);\r
+
+      INSERT INTO schema1.ft_clientes (nome_cliente, email_cliente, id_cidade,
+      id_tipo) VALUES ('Marcos Souza', 'marcos.souza@teste.com', 5, 2);\r
+
+      INSERT INTO schema1.ft_clientes (nome_cliente, email_cliente, id_cidade,
+      id_tipo) VALUES ('Julia Silva', 'julia.silva@teste.com', 1, 1);\r
+
+      INSERT INTO schema1.ft_clientes (nome_cliente, email_cliente, id_cidade,
+      id_tipo) VALUES ('Lucas Martins', 'lucas.martins@teste.com', 3, 3);\r
+
+      INSERT INTO schema1.ft_clientes (nome_cliente, email_cliente, id_cidade,
+      id_tipo) VALUES ('Fernanda Lima', 'fernanda.lima@teste.com', 4, 2);\r\n"
+    metadata:
+      conn:
+        id: U_jykMJmw6XK7VvqfaOpn
+        name: Postgres-Origin
+      database: origin
+      schema: public
+  - kind: 2
+    languageId: sql
+    value: "CREATE TABLE schema1.ft_vendas (\r
+
+      \  id_transacao VARCHAR(50) NOT NULL,\r
+
+      \  id_produto INT NOT NULL,\r
+
+      \  id_cliente INT NOT NULL,\r
+
+      \  id_localizacao INT NOT NULL,\r
+
+      \  data_transacao DATE NULL,\r
+
+      \  quantidade INT NOT NULL,\r
+
+      \  preco_venda DECIMAL(10,2) NOT NULL,\r
+
+      \  custo_produto DECIMAL(10,2) NOT NULL\r
+
+      );\r
+
+      \r
+
+      -- Gerar valores aleatórios para as colunas\r
+
+      WITH dados AS (\r
+
+      \  SELECT \r
+
+      \    floor(random() * 1000000)::text AS id_transacao,\r
+
+      \    floor(random() * 6 + 1) AS id_produto,\r
+
+      \    floor(random() * 10 + 1) AS id_cliente,\r
+
+      \    floor(random() * 4 + 1) AS id_localizacao,\r
+
+      \    '2022-01-01'::date + floor(random() * 365)::integer AS
+      data_transacao,\r
+
+      \    floor(random() * 10 + 1) AS quantidade,\r
+
+      \    round(CAST(random() * 100 + 1 AS numeric), 2) AS preco_venda,\r
+
+      \    round(CAST(random() * 50 + 1 AS numeric), 2) AS custo_produto\r
+
+      \  FROM generate_series(1,1000)\r
+
+      )\r
+
+      -- Inserir dados na tabela\r
+
+      INSERT INTO schema1.ft_vendas (id_transacao, id_produto, id_cliente,
+      id_localizacao, data_transacao, quantidade, preco_venda, custo_produto)\r
+
+      SELECT \r
+
+      \  'TRAN-' || id_transacao AS id_transacao,\r
+
+      \  id_produto,\r
+
+      \  id_cliente,\r
+
+      \  id_localizacao,\r
+
+      \  data_transacao,\r
+
+      \  quantidade,\r
+
+      \  round(CAST(preco_venda AS numeric),2),\r
+
+      \  round(CAST(custo_produto AS numeric),2)\r
+
+      FROM dados;"
+    metadata:
+      conn:
+        id: U_jykMJmw6XK7VvqfaOpn
+        name: Postgres-Origin
+      database: origin
+      schema: public
+  - kind: 2
+    languageId: sql
+    value: SELECT * FROM schema1.ft_vendas;
+    metadata:
+      conn:
+        id: U_jykMJmw6XK7VvqfaOpn
+        name: Postgres-Origin
+      database: origin
+      schema: public
+  - kind: 1
+    languageId: markdown
+    value: "#### DATA WAREHOUSE"
+    metadata: {}
+  - kind: 1
+    languageId: markdown
+    value: "##### CRIAÇÃO DAS TABELAS DO DW"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Tabela Dimensão Cliente\r
+
+      CREATE TABLE dim_cliente (\r
+
+      \    sk_cliente SERIAL PRIMARY KEY,\r
+
+      \    id_cliente INT,\r
+
+      \    nome VARCHAR(255),\r
+
+      \    tipo VARCHAR(255),\r
+
+      \    cidade VARCHAR(255),\r
+
+      \    estado VARCHAR(50),\r
+
+      \    pais VARCHAR(255)\r
+
+      );\r\n"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Tabela Dimensão Produto\r
+
+      CREATE TABLE dim_produto (\r
+
+      \  sk_produto SERIAL PRIMARY KEY,\r
+
+      \  id_produto INT NOT NULL,\r
+
+      \  nome VARCHAR(50) NOT NULL,\r
+
+      \  categoria VARCHAR(50) NOT NULL\r
+
+      );"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Tabela Dimensão Canal\r
+
+      CREATE TABLE dim_canal (\r
+
+      \    sk_canal SERIAL PRIMARY KEY,\r
+
+      \    id_canal INT,\r
+
+      \    nome VARCHAR(255),\r
+
+      \    regiao VARCHAR(255)\r
+
+      );"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Tabela Dimensão Data\r
+
+      CREATE TABLE dim_data (\r
+
+      \    sk_data SERIAL PRIMARY KEY,\r
+
+      \    data_completa DATE,\r
+
+      \    dia INT,\r
+
+      \    mes INT,\r
+
+      \    ano INT\r
+
+      );"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Tabela Fato de Vendas\r
+
+      CREATE TABLE fato_vendas (\r
+
+      \  sk_produto INT NOT NULL,\r
+
+      \  sk_cliente INT NOT NULL,\r
+
+      \  sk_canal INT NOT NULL,\r
+
+      \  sk_data INT NOT NULL,\r
+
+      \  quantidade INT NOT NULL,\r
+
+      \  valor_venda DECIMAL(10,2) NOT NULL,\r
+
+      \  custo_produto DECIMAL(10,2) NOT NULL,\r
+
+      \  receita_vendas DECIMAL(10,2) NOT NULL,\r
+
+      \  PRIMARY KEY (sk_produto, sk_cliente, sk_canal, sk_data),\r
+
+      \  FOREIGN KEY (sk_produto) REFERENCES dim_produto (sk_produto),\r
+
+      \  FOREIGN KEY (sk_cliente) REFERENCES dim_cliente (sk_cliente),\r
+
+      \  FOREIGN KEY (sk_canal) REFERENCES dim_canal (sk_canal),\r
+
+      \  FOREIGN KEY (sk_data) REFERENCES dim_data (sk_data)\r
+
+      );"
+    metadata: {}
+  - kind: 1
+    languageId: markdown
+    value: "##### INSERÇÃO DOS DADOS NO DW"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: "-- Carrega a tabela dim_data (tempo)\r
+
+      INSERT INTO dim_data (ano, mes, dia, data_completa)\r
+
+      SELECT EXTRACT(YEAR FROM d)::INT, \r
+
+      \       EXTRACT(MONTH FROM d)::INT, \r
+
+      \       EXTRACT(DAY FROM d)::INT, d::DATE\r
+
+      FROM generate_series('2020-01-01'::DATE, '2025-12-31'::DATE, '1
+      day'::INTERVAL) d;\r\n"
+    metadata: {}
+  - kind: 2
+    languageId: sql
+    value: ""
+    metadata: {}
+metadata:
+  conn:
+    id: U_jykMJmw6XK7VvqfaOpn
+    name: Postgres-Origin
+  database: origin
+  schema: public
