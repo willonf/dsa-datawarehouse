@@ -5,10 +5,10 @@ FROM ubuntu:latest
 RUN apt-get update && \
     apt-get install -y wget unzip curl openssh-client iputils-ping gnupg lsb-release
 
-# Definir a versão do Terraform (ajuste conforme necessário)
+# Definir a versão do iac (ajuste conforme necessário)
 ENV TERRAFORM_VERSION=1.12.2
 
-# Baixar e instalar Terraform
+# Baixar e instalar iac
 RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
     unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
     mv terraform /usr/local/bin/ && \

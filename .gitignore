@@ -38,3 +38,6 @@ terraform.rc
 
 # Jetbrains
 .idea
+
+# Credentials files
+rootkey.csv
